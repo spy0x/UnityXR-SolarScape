@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
@@ -27,7 +28,7 @@ public class SolarPanel : MonoBehaviour
         float energyOutput = Mathf.Clamp(CalculateSolarEnergy(), 0, maxPowerOutput);
         if (textOutput)
         {
-            textOutput.text = "Output: " + energyOutput.ToString("F2") + " Watts";
+            textOutput.text = $"{energyOutput.ToString("F2")}/{maxPowerOutput} W";
         }
     }
 
@@ -52,5 +53,36 @@ public class SolarPanel : MonoBehaviour
         float powerOutput = irradiance * area * efficiency;
 
         return powerOutput;
+    }
+
+    public void SetZRotation()
+    {
+        StopAllCoroutines();
+        StartCoroutine(SetZRotationCoroutine());
+    }
+
+    private IEnumerator SetZRotationCoroutine()
+    {
+        yield return new WaitForSeconds(1f);
+        if (transform.rotation.eulerAngles.z > -45 && transform.rotation.eulerAngles.z < 45)
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
+        }
+        else if (transform.rotation.eulerAngles.z > 315 && transform.rotation.eulerAngles.z < 360)
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
+        }
+        else if (transform.rotation.eulerAngles.z < -135 && transform.rotation.eulerAngles.z > -225)
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
+        }
+        else if (transform.rotation.eulerAngles.z > 135 && transform.rotation.eulerAngles.z < 225)
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90);
+        }
     }
 }
