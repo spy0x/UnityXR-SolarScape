@@ -10,7 +10,7 @@ public class SolarPanel : MonoBehaviour
     [SerializeField] float efficiency = 0.20f; // 20% efficiency (typical for real panels)
     [SerializeField] float maxPowerOutput = 400f; // Watts (optimal power in full sunlight)
     [SerializeField] float area = 1.0f; // m² (size of the panel, scale your cube accordingly)
-    [SerializeField] TextMeshPro textOutput; // TextMeshPro component to display output
+    [SerializeField] TMP_Text textOutput; // TextMeshPro component to display output
     
     private Light sunLight;
     private float maxSunIntensity = 1000f; // W/m² (standard solar irradiance at optimal conditions)
