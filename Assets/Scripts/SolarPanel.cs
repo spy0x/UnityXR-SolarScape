@@ -41,7 +41,7 @@ public class SolarPanel : MonoBehaviour
         float energyOutput = Mathf.Clamp(CalculateSolarEnergy(), 0, maxPowerOutput);
         if (textOutput)
         {
-            textOutput.text = $"{energyOutput.ToString("F2")}/{maxPowerOutput} W";
+            textOutput.text = $"{energyOutput.ToString("F2")} W";
         }
     }
 
