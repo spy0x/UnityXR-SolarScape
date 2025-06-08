@@ -15,11 +15,17 @@ public class SolarPanel : MonoBehaviour
     [SerializeField] TMP_Text textOutput; // TextMeshPro component to display output
     [SerializeField] UnityEvent onHammerHit; // Event to trigger when the panel is hit by a hammer
     [SerializeField] private GameObject[] rotators;
-    
+	[SerializeField] GameObject panelPrefab;
+    [SerializeField] InteractableObjectLabel interactableObjectLabel;
 
     private bool hasBeenSet;
     private Light sunLight;
     private float maxSunIntensity = 1000f; // W/m² (standard solar irradiance at optimal conditions)
+
+    private void Awake()
+    {
+        interactableObjectLabel.playerHead = GameObject.FindWithTag("MainCamera").transform;
+    }
 
     private void Start()
     {
@@ -109,5 +115,10 @@ public class SolarPanel : MonoBehaviour
             transform.rotation =
                 Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90);
         }
+    }
+
+    public void DuplicateSolarPanel(Transform spawnPoint)
+    {
+        Instantiate(panelPrefab, spawnPoint.position, spawnPoint.rotation, transform);
     }
 }
