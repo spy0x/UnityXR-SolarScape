@@ -2,18 +2,25 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Experimental.GlobalIllumination;
 
 public class SolarPanel : MonoBehaviour
 {
-    [Header("Solar Panel Settings")]
-    [SerializeField] float efficiency = 0.20f; // 20% efficiency (typical for real panels)
+    [Header("Solar Panel Settings")] [SerializeField]
+    float efficiency = 0.20f; // 20% efficiency (typical for real panels)
+
     [SerializeField] float maxPowerOutput = 400f; // Watts (optimal power in full sunlight)
     [SerializeField] float area = 1.0f; // m² (size of the panel, scale your cube accordingly)
     [SerializeField] TMP_Text textOutput; // TextMeshPro component to display output
+    [SerializeField] UnityEvent onHammerHit; // Event to trigger when the panel is hit by a hammer
+    [SerializeField] private GameObject[] rotators;
     
+
+    private bool hasBeenSet;
     private Light sunLight;
     private float maxSunIntensity = 1000f; // W/m² (standard solar irradiance at optimal conditions)
+
     private void Start()
     {
         SunPositionCalculator sunPositionCalculator = FindFirstObjectByType<SunPositionCalculator>();
@@ -32,6 +39,19 @@ public class SolarPanel : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Hammer") && !hasBeenSet)
+        {
+            hasBeenSet = true;
+            onHammerHit?.Invoke();
+            foreach (GameObject rotator in rotators)
+            {
+                rotator.SetActive(false);
+            }
+        }
+    }
+
     float CalculateSolarEnergy()
     {
         // 0. Check if the sun is above the horizon. If below, return 0 energy output
@@ -39,7 +59,7 @@ public class SolarPanel : MonoBehaviour
         {
             return 0;
         }
-        
+
         // 1. Get angle between sun and panel normal
         float angle = Vector3.Angle(transform.forward, -sunLight.transform.forward);
 
@@ -66,23 +86,28 @@ public class SolarPanel : MonoBehaviour
         yield return new WaitForSeconds(1f);
         if (transform.rotation.eulerAngles.z > -45 && transform.rotation.eulerAngles.z < 45)
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
+            transform.rotation =
+                Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
         }
         else if (transform.rotation.eulerAngles.z > 315 && transform.rotation.eulerAngles.z < 360)
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
+            transform.rotation =
+                Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
         }
         else if (transform.rotation.eulerAngles.z < -135 && transform.rotation.eulerAngles.z > -225)
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
+            transform.rotation =
+                Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
         }
         else if (transform.rotation.eulerAngles.z > 135 && transform.rotation.eulerAngles.z < 225)
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
+            transform.rotation =
+                Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
         }
         else
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90);
+            transform.rotation =
+                Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90);
         }
     }
 }
