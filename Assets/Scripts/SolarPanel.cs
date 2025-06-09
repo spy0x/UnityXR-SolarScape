@@ -13,12 +13,9 @@ public class SolarPanel : MonoBehaviour
     [SerializeField] float maxPowerOutput = 400f; // Watts (optimal power in full sunlight)
     [SerializeField] float area = 1.0f; // m² (size of the panel, scale your cube accordingly)
     [SerializeField] TMP_Text textOutput; // TextMeshPro component to display output
-    [SerializeField] UnityEvent onHammerHit; // Event to trigger when the panel is hit by a hammer
-    [SerializeField] private GameObject[] rotators;
 	[SerializeField] GameObject panelPrefab;
     [SerializeField] InteractableObjectLabel interactableObjectLabel;
 
-    private bool hasBeenSet;
     private Light sunLight;
     private float maxSunIntensity = 1000f; // W/m² (standard solar irradiance at optimal conditions)
 
@@ -47,14 +44,9 @@ public class SolarPanel : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Hammer") && !hasBeenSet)
+        if (other.CompareTag("Hammer"))
         {
-            hasBeenSet = true;
-            onHammerHit?.Invoke();
-            foreach (GameObject rotator in rotators)
-            {
-                rotator.SetActive(false);
-            }
+            Destroy(gameObject);
         }
     }
 
@@ -119,6 +111,6 @@ public class SolarPanel : MonoBehaviour
 
     public void DuplicateSolarPanel(Transform spawnPoint)
     {
-        Instantiate(panelPrefab, spawnPoint.position, spawnPoint.rotation, transform);
+        Instantiate(panelPrefab, spawnPoint.position, spawnPoint.rotation);
     }
 }
