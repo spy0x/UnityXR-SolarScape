@@ -1,23 +1,28 @@
-using System;
+
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Experimental.GlobalIllumination;
+
 
 public class SolarPanel : MonoBehaviour
 {
     [Header("Solar Panel Settings")] [SerializeField]
     float efficiency = 0.20f; // 20% efficiency (typical for real panels)
 
-    [SerializeField] float maxPowerOutput = 400f; // Watts (optimal power in full sunlight)
-    [SerializeField] float area = 1.0f; // m² (size of the panel, scale your cube accordingly)
+    [SerializeField] float maxPowerOutput = 500f; // Watts (optimal power in full sunlight)
+    [SerializeField] float area = 2.0f; // m² (size of the panel, scale your cube accordingly)
     [SerializeField] TMP_Text textOutput; // TextMeshPro component to display output
 	[SerializeField] GameObject panelPrefab;
     [SerializeField] InteractableObjectLabel interactableObjectLabel;
 
     private Light sunLight;
     private float maxSunIntensity = 1000f; // W/m² (standard solar irradiance at optimal conditions)
+    private float energyOutput = 0f; // Current power output
+    private static List<SolarPanel> solarPanels = new List<SolarPanel>();
+    public static List<SolarPanel> SolarPanels => solarPanels;
+    public float EnergyOutput => energyOutput;
+    public float MaxPowerOutput => maxPowerOutput;
 
     private void Awake()
     {
@@ -28,6 +33,7 @@ public class SolarPanel : MonoBehaviour
     {
         SunPositionCalculator sunPositionCalculator = FindFirstObjectByType<SunPositionCalculator>();
         if (!sunPositionCalculator) return;
+        solarPanels.Add(this);
         maxSunIntensity = sunPositionCalculator.MaxSunIntensity;
         sunLight = sunPositionCalculator.SunLight;
     }
@@ -35,7 +41,7 @@ public class SolarPanel : MonoBehaviour
     void Update()
     {
         if (!sunLight) return;
-        float energyOutput = Mathf.Clamp(CalculateSolarEnergy(), 0, maxPowerOutput);
+        energyOutput = Mathf.Clamp(CalculateSolarEnergy(), 0, maxPowerOutput);
         if (textOutput)
         {
             textOutput.text = $"{energyOutput.ToString("F2")} W";
