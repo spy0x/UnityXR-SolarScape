@@ -7,9 +7,9 @@ public class SmallSolarPanel : MonoBehaviour
     [SerializeField] private float rotationSpeed = 10f; // Speed of rotation in degrees per second
     [SerializeField] private GameObject panelPrefab; // Prefab to spawn when hit by a hammer
     [SerializeField] private float resetHitTime = 1f; // Time in seconds to reset the hit state
-    [SerializeField] private float spawnDistance = 2f; // Distance to spawn the panel in front of the camera
+    [SerializeField] private Transform solarPanelSpawnPoint;
 
-    private bool hasBeenHit = false; // Flag to check if the panel has been hit
+    private bool hasBeenHit; // Flag to check if the panel has been hit
 
     // Update is called once per frame
     void Update()
@@ -36,15 +36,15 @@ public class SmallSolarPanel : MonoBehaviour
 
     private void SpawnPanel()
     {
-        // spawn in front of the player MainCamera
-        if (Camera.main)
-        {
-            Vector3 cameraRotation = Camera.main.transform.rotation.eulerAngles;
-            Quaternion eularRotation = Quaternion.Euler(cameraRotation.x - 45, cameraRotation.y + 90, 0);
-            Vector3 cameraPositionForward =
-                Camera.main.transform.position + Camera.main.transform.forward * spawnDistance;
-            Instantiate(panelPrefab, cameraPositionForward, eularRotation);
-        }
+        Instantiate(panelPrefab, solarPanelSpawnPoint.position, solarPanelSpawnPoint.rotation);
+        // if (Camera.main)
+        // {
+        //     Vector3 cameraRotation = Camera.main.transform.rotation.eulerAngles;
+        //     Quaternion eularRotation = Quaternion.Euler(cameraRotation.x - 45, cameraRotation.y + 90, 0);
+        //     Vector3 cameraPositionForward =
+        //         Camera.main.transform.position + Camera.main.transform.forward * spawnDistance;
+        //     Instantiate(panelPrefab, cameraPositionForward, eularRotation);
+        // }
     }
 
     private void EnableHasBeenHit()

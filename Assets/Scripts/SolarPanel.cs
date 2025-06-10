@@ -52,6 +52,7 @@ public class SolarPanel : MonoBehaviour
     {
         if (other.CompareTag("Hammer"))
         {
+            solarPanels.Remove(this);
             Destroy(gameObject);
         }
     }
