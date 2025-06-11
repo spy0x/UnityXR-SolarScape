@@ -16,6 +16,8 @@ public class SolarPanel : MonoBehaviour
 	[SerializeField] GameObject panelPrefab;
     [SerializeField] InteractableObjectLabel interactableObjectLabel;
     [SerializeField] private GameObject particlesDestroyed; // Prefab to spawn when destroyed
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip builtSound;
 
     private bool isDestroyed;
     private Light sunLight;
@@ -33,6 +35,7 @@ public class SolarPanel : MonoBehaviour
 
     private void Start()
     {
+        if (audioSource && builtSound) audioSource.PlayOneShot(builtSound, 1f); 
         SunPositionCalculator sunPositionCalculator = FindFirstObjectByType<SunPositionCalculator>();
         if (!sunPositionCalculator) return;
         solarPanels.Add(this);

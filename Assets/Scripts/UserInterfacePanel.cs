@@ -1,5 +1,3 @@
-using System;
-using GroqApiLibrary;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,6 +33,7 @@ public class UserInterfacePanel : MonoBehaviour
             {
                 message = message.Substring(0, firstParagraphEnd);
             }
+
             groqTTS.Prompt = message;
             groqTTS.Generate();
         }
@@ -43,9 +42,12 @@ public class UserInterfacePanel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!panelPrefab.activeSelf) return;
+
         solarPanelCountText.text = $"You have <b>{SolarPanel.SolarPanels.Count}</b> <i>500W</i> Solar Panels.";
         energyOutputText.text =
             $"You are currently producing <b>{CalculateTotalEnergyOutput().ToString("F1")}W</b> out of a maximum of <b>{GetTotalMaxPowerOutput().ToString("F1")}W</b>.";
+        
         energyOutputSlider.value =
             GetTotalMaxPowerOutput() != 0 ? CalculateTotalEnergyOutput() / GetTotalMaxPowerOutput() : 0f;
         sliderText.text = $"{(energyOutputSlider.value * 100).ToString("F1")}%";
@@ -81,6 +83,7 @@ public class UserInterfacePanel : MonoBehaviour
             panelPrefab.SetActive(!panelPrefab.activeSelf);
             panelPrefab.transform.position = menuPosition.position;
             panelPrefab.transform.rotation = menuPosition.rotation;
+            groqMessageText.text = string.Empty; // Clear the Groq message text when toggling the panel
         }
     }
 
@@ -96,6 +99,7 @@ public class UserInterfacePanel : MonoBehaviour
     {
         if (groqChat)
         {
+            groqMessageText.text = "Generating review...";
             reviewButton.interactable = false;
             groqChat.UserInput =
                 $"I have {SolarPanel.SolarPanels.Count} 500w solar panels, currently getting a total of {CalculateTotalEnergyOutput().ToString("F1")}W. For a residential house, what devices could I have connected without using power grid? Make a bullet list in plain text for Unity Text Mesh Pro GUI.";

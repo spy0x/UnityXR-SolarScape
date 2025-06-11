@@ -20,7 +20,6 @@ public class SunPositionCalculator : MonoBehaviour
     public void UpdateSunPosition()
     {
         DateTime now = DateTime.Now;
-        Debug.Log("Current Time: " + now.ToString("yyyy-MM-dd HH:mm:ss"));
         SunPosition sunPos = CalculateSunPosition(now, latitude, longitude, utcOffset);
         
         // Apply rotation to directional light
