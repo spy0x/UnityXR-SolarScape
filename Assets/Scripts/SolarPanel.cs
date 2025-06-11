@@ -15,7 +15,9 @@ public class SolarPanel : MonoBehaviour
     [SerializeField] TMP_Text textOutput; // TextMeshPro component to display output
 	[SerializeField] GameObject panelPrefab;
     [SerializeField] InteractableObjectLabel interactableObjectLabel;
+    [SerializeField] private GameObject particlesDestroyed; // Prefab to spawn when destroyed
 
+    private bool isDestroyed;
     private Light sunLight;
     private float maxSunIntensity = 1000f; // W/m² (standard solar irradiance at optimal conditions)
     private float energyOutput = 0f; // Current power output
@@ -50,9 +52,13 @@ public class SolarPanel : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (isDestroyed) return; // Prevent further interactions if already destroyed
         if (other.CompareTag("Hammer"))
         {
+            isDestroyed = true;
             solarPanels.Remove(this);
+            var instantiatedEffects = Instantiate(particlesDestroyed, transform.position, Quaternion.identity);
+            Destroy(instantiatedEffects, 5f);
             Destroy(gameObject);
         }
     }
