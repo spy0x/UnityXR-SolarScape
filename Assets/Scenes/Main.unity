@@ -5969,7 +5969,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1981258312}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 02dc9c1e735c54d489c5007b4c5de9e9, type: 3}
   m_Name: 
@@ -6392,6 +6392,18 @@ PrefabInstance:
       propertyPath: _transformFeatureStateProvider
       value: 
       objectReference: {fileID: 2107898409}
+    - target: {fileID: 1708986729792285420, guid: c74d33c872cf89345932e7ab4c87c52c, type: 3}
+      propertyPath: _transformFeatureConfigs._values.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1708986729792285420, guid: c74d33c872cf89345932e7ab4c87c52c, type: 3}
+      propertyPath: _transformFeatureConfigs._values.Array.data[1]._state
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1708986729792285420, guid: c74d33c872cf89345932e7ab4c87c52c, type: 3}
+      propertyPath: _transformFeatureConfigs._values.Array.data[1]._feature
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2293299698611719789, guid: c74d33c872cf89345932e7ab4c87c52c, type: 3}
       propertyPath: _whenSelected.m_PersistentCalls.m_Calls.Array.size
       value: 2
