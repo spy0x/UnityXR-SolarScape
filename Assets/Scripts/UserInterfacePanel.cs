@@ -1,3 +1,5 @@
+using System;
+using GroqApiLibrary;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,17 +13,41 @@ public class UserInterfacePanel : MonoBehaviour
     [SerializeField] private TMP_Text energyOutputText;
     [SerializeField] private TMP_Text sliderText; // Text component for the slider value
     [SerializeField] private Slider energyOutputSlider;
+    [SerializeField] private GroqChat groqChat; // Reference to the GroqChat component
+    [SerializeField] private Toggle reviewButton;
+    [SerializeField] private TMP_Text groqMessageText; // Text component to display Groq's response
+    [SerializeField] private GroqTTS groqTTS; // Reference to the GroqTTS component for text-to-speech
 
-    void Start()
+    private void Start()
     {
+        groqChat.OnMessageGenerated += OnGroqMessageGenerated;
+    }
+
+    private void OnGroqMessageGenerated(bool wasSuccessful, string message)
+    {
+        reviewButton.interactable = true;
+        groqMessageText.text = message;
+        if (groqTTS && wasSuccessful)
+        {
+            // get only the first paragraph from the message because its too long for TTS
+            int firstParagraphEnd = message.IndexOf('\n');
+            if (firstParagraphEnd > 0)
+            {
+                message = message.Substring(0, firstParagraphEnd);
+            }
+            groqTTS.Prompt = message;
+            groqTTS.Generate();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         solarPanelCountText.text = $"You have <b>{SolarPanel.SolarPanels.Count}</b> <i>500W</i> Solar Panels.";
-        energyOutputText.text = $"You are currently producing <b>{CalculateTotalEnergyOutput().ToString("F1")}W</b> out of a maximum of <b>{GetTotalMaxPowerOutput().ToString("F1")}W</b>.";
-        energyOutputSlider.value = GetTotalMaxPowerOutput() != 0 ? CalculateTotalEnergyOutput()/GetTotalMaxPowerOutput() : 0f;
+        energyOutputText.text =
+            $"You are currently producing <b>{CalculateTotalEnergyOutput().ToString("F1")}W</b> out of a maximum of <b>{GetTotalMaxPowerOutput().ToString("F1")}W</b>.";
+        energyOutputSlider.value =
+            GetTotalMaxPowerOutput() != 0 ? CalculateTotalEnergyOutput() / GetTotalMaxPowerOutput() : 0f;
         sliderText.text = $"{(energyOutputSlider.value * 100).ToString("F1")}%";
     }
 
@@ -32,6 +58,7 @@ public class UserInterfacePanel : MonoBehaviour
         {
             totalMaxPower += solarPanel.MaxPowerOutput;
         }
+
         return totalMaxPower;
     }
 
@@ -42,6 +69,7 @@ public class UserInterfacePanel : MonoBehaviour
         {
             totalEnergyOutput += solarPanel.EnergyOutput;
         }
+
         return totalEnergyOutput;
     }
 
@@ -61,6 +89,17 @@ public class UserInterfacePanel : MonoBehaviour
         if (titleText)
         {
             titleText.text = title;
+        }
+    }
+
+    public void ReviewWithGroq()
+    {
+        if (groqChat)
+        {
+            reviewButton.interactable = false;
+            groqChat.UserInput =
+                $"I have {SolarPanel.SolarPanels.Count} 500w solar panels, currently getting a total of {CalculateTotalEnergyOutput().ToString("F1")}W. For a residential house, what devices could I have connected without using power grid? Make a bullet list in plain text for Unity Text Mesh Pro GUI.";
+            groqChat.SendRequest();
         }
     }
 }
